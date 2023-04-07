@@ -11,7 +11,7 @@ try:
     response = requests.get(url)
     html = response.content
     print(LogSymbols.SUCCESS.value, "Icon Cheatsheet")
-except requests.exceptions.RequestException as e:  # This is the correct syntax
+except requests.exceptions.RequestException as e:
     raise SystemExit(e)
 
 # Scrape icon names from page
@@ -20,8 +20,16 @@ all_icons = soup.select("input.name")
 print(LogSymbols.SUCCESS.value, "Icons:", len(all_icons))
 
 # PUT the node appearances
-nodeAppearances = [{"predicate": {"propertyKeys": [], "knownValues":{}, "dbLabel": icon_name["value"]
-    .replace("-", "_")}, "size":40.0, "icon": icon_name["value"]} for icon_name in all_icons]
+nodeAppearances = [
+    { 
+      "predicate": { 
+        "propertyKeys": [], 
+        "knownValues": {}, 
+        "dbLabel": icon_name["value"].replace("-", "_")
+      }, 
+      "size":40.0, 
+      "icon": icon_name["value"]
+    } for icon_name in all_icons]
 json_data = json.dumps(nodeAppearances)
 try:
     headers = {'Content-type': 'application/json'}
