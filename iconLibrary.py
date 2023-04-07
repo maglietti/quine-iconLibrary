@@ -3,7 +3,7 @@ import requests
 import json
 from halo import Halo
 from log_symbols import LogSymbols
-from bs4 import BeautifulSoup as bs
+from bs4 import BeautifulSoup
 
 # Fetch icon cheatsheet page
 try:
@@ -15,7 +15,7 @@ except requests.exceptions.RequestException as e:
     raise SystemExit(e)
 
 # Scrape icon names from page
-soup = bs(html, 'html.parser')
+soup = BeautifulSoup(html, 'html.parser')
 all_icons = soup.select("input.name")
 print(LogSymbols.SUCCESS.value, "Icons:", len(all_icons))
 
