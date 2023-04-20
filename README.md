@@ -13,7 +13,7 @@ We will be using the following tools and technologies:
 * Halo library to add a spinner animation and updates to the terminal output
 * Log-Symbols library to add emojis to the terminal output
 
-First, we need to install the required libraries. We can do this using pip, the Python package installer. Open a terminal and type the following command:
+First, we need to install the required libraries. We can do this using `pip`. Open a terminal and type the following command:
 
 ```
 pip install -r requirements.txt
