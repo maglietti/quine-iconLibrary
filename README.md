@@ -19,4 +19,4 @@ First, we need to install the required libraries. We can do this using `pip`. Op
 pip install -r requirements.txt
 ```
 
-Optionally, load the included notebook using a Jupyter Lab or Notebook environment.
+Now run the `iconLibray.py` script or optionally, load the included notebook using a Jupyter Lab or Notebook environment.
