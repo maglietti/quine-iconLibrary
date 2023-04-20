@@ -10,14 +10,14 @@ try:
     url = "https://ionic.io/ionicons/v2/cheatsheet.html"
     response = requests.get(url)
     html = response.content
-    print(LogSymbols.SUCCESS.value, "Icon Cheatsheet")
+    print(LogSymbols.SUCCESS.value, "GET Icon Cheatsheet")
 except requests.exceptions.RequestException as e:
     raise SystemExit(e)
 
-# Scrape icon names from page
+# Extract icon names from page
 soup = BeautifulSoup(html, 'html.parser')
 all_icons = soup.select("input.name")
-print(LogSymbols.SUCCESS.value, "Icons:", len(all_icons))
+print(LogSymbols.SUCCESS.value, "Extract Icon Names:", len(all_icons))
 
 # PUT the node appearances
 nodeAppearances = [
@@ -41,6 +41,7 @@ try:
         'http://localhost:8080/api/v1/query-ui/node-appearances', data=json_data, headers=headers)
 except requests.exceptions.RequestException as e:
     raise SystemExit(e)
+print(LogSymbols.SUCCESS.value, "PUT Node Appearances")
 
 # POST icon nodes to decorate
 quineSpinner = Halo(text='Creating Icon Nodes', spinner='bouncingBar')
@@ -48,13 +49,29 @@ try:
     quineSpinner.start()
     for icon_name in all_icons:
         group = icon_name["value"].split('-',2)
-        query_text = (f'MATCH (a), (b), (c) WHERE id(a) = idFrom("{group[0]}") AND id(b) = idFrom("{group[1]}") AND id(c) = idFrom("{icon_name["value"]}") SET a:{group[0]}, a.name = "{group[0]}" SET b:{group[1]}, b.name = "{group[1]}" SET c:{icon_name["value"].replace("-", "_")}, c.name = "{icon_name["value"]}" CREATE (a)<-[:` `]-(b)<-[:` `]-(c)') if len(group) == 3 else (f'MATCH (a), (c) WHERE id(a) = idFrom("{group[0]}") AND id(c) = idFrom("{icon_name["value"]}") SET a:{group[0]}, a.name = "{group[0]}" SET c:{icon_name["value"].replace("-", "_")}, c.name = "{icon_name["value"]}" CREATE (a)<-[:` `]-(c)')
+        query_text = (
+            f'MATCH (a), (b), (c) '
+            f'WHERE id(a) = idFrom("{group[0]}") '
+            f'  AND id(b) = idFrom("{group[1]}") '
+            f'  AND id(c) = idFrom("{icon_name["value"]}") '
+            f'SET a:{group[0]}, a.name = "{group[0]}" '
+            f'SET b:{group[1]}, b.name = "{group[1]}" '
+            f'SET c:{icon_name["value"].replace("-", "_")}, c.name = "{icon_name["value"]}" '
+            f'CREATE (a)<-[:` `]-(b)<-[:` `]-(c)'
+          ) if len(group) == 3 else (
+            f'MATCH (a), (c) '
+            f'WHERE id(a) = idFrom("{group[0]}") '
+            f' AND id(c) = idFrom("{icon_name["value"]}") '
+            f'SET a:{group[0]}, a.name = "{group[0]}" '
+            f'SET c:{icon_name["value"].replace("-", "_")}, c.name = "{icon_name["value"]}" '
+            f'CREATE (a)<-[:` `]-(c)'
+          )
         quineSpinner.text = query_text
         headers = {'Content-type': 'text/plain'}
         # print(query_text)
         response = requests.post(
             'http://localhost:8080/api/v1/query/cypher', data=query_text, headers=headers)
-    quineSpinner.succeed('Icon Nodes')
+    quineSpinner.succeed('POST Icon Nodes')
 except requests.exceptions.Timeout as timeout:
     quineSpinner.stop('Request Timeout: ' + timeout)
 except requests.exceptions.RequestException as e:

@@ -33,10 +33,6 @@
 /MANIFEST
 /site
 
-# Distribution files
-/dist
-/mkdocs_material.egg-info
-
 # Caches and logs
 *.cpuprofile
 *.log
@@ -44,6 +40,7 @@
 .cache
 .eslintcache
 __pycache__
+/.ipynb_checkpoints
 
 # -----------------------------------------------------------------------------
 # General
@@ -51,10 +48,6 @@ __pycache__
 
 # Never ignore .gitkeep files
 !**/.gitkeep
-
-# Husky hooks
-.husky/.gitignore
-.husky/_
 
 # macOS internals
 .DS_Store
